@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    Fore more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+  -->
+  <base href="/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Dating">
+  <link rel="apple-touch-icon" href="logo.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="logo.png"/>
+
+  <title>dating</title>
+  <link rel="manifest" href="manifest.json">
+  <script src ="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+  <!-- This script installs service_worker.js to provide PWA functionality to
+       application. For more information, see:
+       https://developers.google.com/web/fundamentals/primers/service-workers -->
+ 
+       <script>
+        function _beginServiceWorkerUpdateFlow(registration) {
+          if (
+            window.confirm("New version of the app is available. Refresh now?") &&
+            registration.waiting
+          ) {
+            // let waiting Service Worker know it should become active
+            registration.waiting.postMessage("skipWaiting");
+          }
+        }
+        if ("serviceWorker" in navigator) {
+          window.addEventListener("load", function () {
+            navigator.serviceWorker.register("firebase-messaging-sw.js").then(
+              function (registration) {
+                if (registration.waiting) {
+                  _beginServiceWorkerUpdateFlow(registration);
+                }
+  
+                // detect Service Worker update available and wait for it to install
+                registration.addEventListener("updatefound", () => {
+                  if (registration.installing) {
+                    // wait until the new Service worker is actually installed
+                    registration.installing.addEventListener(
+                      "statechange",
+                      () => {
+                        if (registration.waiting) {
+                          // if there's an existing Service Worker, show the prompt
+                          if (navigator.serviceWorker.controller) {
+                            _beginServiceWorkerUpdateFlow(registration);
+                          } else {
+                            // otherwise it's the first install, there is nothing to do
+                            console.log(
+                              "Service Worker initialized for the first time"
+                            );
+                          }
+                        }
+                      }
+                    );
+                  }
+                });
+  
+                let refreshing = false;
+  
+                // detect controller change and refresh the page
+                navigator.serviceWorker.addEventListener(
+                  "controllerchange",
+                  () => {
+                    if (!refreshing) {
+                      window.location.reload(true);
+                      refreshing = true;
+                    }
+                  }
+                );
+              },
+              function (err) {
+                // registration failed
+                console.log("ServiceWorker registration failed: ", err);
+              }
+            );
+          });
+        }
+      </script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-messaging.js"></script>
+  <script>
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    var firebaseConfig = {
+      apiKey: "AIzaSyDLvpuR35ZzIfbMeSsKkbOFacqwuS6BeLg",
+      authDomain: "dating-2a6e2.firebaseapp.com",
+      projectId: "dating-2a6e2",
+      storageBucket: "dating-2a6e2.appspot.com",
+      messagingSenderId: "841074318104",
+      appId: "1:841074318104:web:62fb2d7397b3f818355c6d",
+      measurementId: "G-K41TG12M1Y"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+  </script>
+  
+  <script src="main.dart.js" type="application/javascript"></script>
+</body>
+</html>
